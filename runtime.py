@@ -139,7 +139,7 @@ def _run_locked(message, session_id=None, system=None):
 
     env = dict(os.environ)
     home = os.path.expanduser("~")
-    env["PATH"] = ":".join(dict.fromkeys([
+    env["PATH"] = os.pathsep.join(dict.fromkeys([
         env.get("PATH", ""), os.path.join(home, ".local", "bin"),
         "/opt/homebrew/bin", "/usr/local/bin",
         os.path.join(home, ".npm-global", "bin"),
@@ -148,6 +148,7 @@ def _run_locked(message, session_id=None, system=None):
 
     try:
         proc = subprocess.Popen(cmd, cwd=WORKDIR, text=True, bufsize=1,
+                                encoding="utf-8", errors="replace",
                                 stdout=subprocess.PIPE, stderr=subprocess.PIPE, env=env)
         with _ACTIVE_LOCK:
             _ACTIVE_PROC = proc
